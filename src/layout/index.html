@@ -51,10 +51,10 @@
           />
         </div>
         <div
-          class="relative filter-box bg-white pl-6 pr-12 py-3 shadow-md text-blue-950 text-sm text-left cursor-pointer rounded-md sm-max:mr-14 sm-max:mt-12 select-none dark:bg-[#2b3945] dark:text-white"
+          class="relative filter-box bg-white pl-6 pr-12 py-2 shadow-md text-blue-950 text-sm text-left cursor-pointer rounded-md sm-max:mr-14 sm-max:mt-12 select-none dark:bg-[#2b3945] dark:text-white"
         >
           <p
-            class="relative after:absolute after:top-1/2 after:-translate-y-1/2 after:translate-x-3 after:font-['Font_Awesome_5_free'] after:content-['\f078'] after:font-black after:text-xs"
+            class="relative mt-2 after:absolute after:top-1/2 after:-translate-y-1/2 after:translate-x-3 after:font-['Font_Awesome_5_free'] after:content-['\f078'] after:font-black after:text-xs"
           >
             Filter by Region
           </p>
@@ -98,6 +98,9 @@
       <div
         class="countries relative flex gap-9 flex-wrap text-blue-950 justify-center"
       >
+        <p class="no-results-text text-blue-950 dark:text-white" hidden="true">
+          No such country was found.
+        </p>
         <div
           class="spinner-container hidden fixed top-0 left-0 spinner bg-black bg-opacity-60 w-screen h-screen z-10"
         >

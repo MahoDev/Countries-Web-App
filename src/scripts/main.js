@@ -109,11 +109,7 @@ function showCountries(countriesArray) {
 //Search tool
 let gotResultsBefore = false;
 let searchResults = [];
-const noResultsText = document.createElement("p");
-noResultsText.innerText = "No such country was found.";
-noResultsText.setAttribute("hidden", "true");
-countriesContainer.appendChild(noResultsText);
-
+const noResultsText = document.querySelector(".no-results-text");
 const searchInput = document.querySelector(".search-box input");
 
 searchInput.addEventListener("keypress", async function (event) {
@@ -123,7 +119,6 @@ searchInput.addEventListener("keypress", async function (event) {
 
     event.preventDefault();
     const countryObj = await getCountry(searchInput.value);
-    console.log(countryObj);
     if (countryObj !== undefined) {
       noResultsText.setAttribute("hidden", "true");
       if (gotResultsBefore == false) {
@@ -166,7 +161,6 @@ function changeVisibiltyOfCountries(
     });
   } else {
     if (countryNamesToToggle !== null && countryNamesToToggle.length != 0) {
-      console.log(countryElementsToToggle);
       let returnCountries = [];
       countryNamesToToggle.forEach((countryName) => {
         const xpath = `//h2[text()="${countryName}"]`;
@@ -180,8 +174,6 @@ function changeVisibiltyOfCountries(
         countryEl.removeAttribute("hidden");
         returnCountries.push(countryEl);
       });
-      console.log("returnCountries = ");
-      console.log(returnCountries);
       return returnCountries;
     } else if (
       countryElementsToToggle !== null &&
@@ -205,6 +197,8 @@ filterP.addEventListener("click", () =>
 regions.forEach((region) => {
   region.onclick = async () => {
     //add loading spinner
+    noResultsText.setAttribute("hidden", "true");
+
     comp.toggleLoadingSpinner();
 
     regionsContainer.classList.toggle("hidden");
