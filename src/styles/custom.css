@@ -1,0 +1,16 @@
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+* {
+  font-family: "Nunito Sans";
+}
+
+.spin {
+  animation: spin 1s ease-in-out infinite;
+}
