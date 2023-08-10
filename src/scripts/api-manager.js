@@ -1,5 +1,3 @@
-export { getCountries };
-
 //This function returns a promise that is created
 //implictly during runtime. Its resolved value is
 //is either passedData or failObj.
@@ -40,7 +38,7 @@ function makeCall(url) {
   }
 }
 
-function getCountries() {
+export function getCountries() {
   return makeCall("https://restcountries.com/v3.1/all").then((data) => {
     if (typeof data === "object" && data.message === "Failed") {
       return makeCall("../data/fallback-data.json").then((fallbackData) => {
@@ -73,6 +71,7 @@ export function getCountry(countryName) {
     }
   );
 }
+
 export function getCountriesByRegion(region) {
   return makeCall(`https://restcountries.com/v3.1/region/${region}
 `).then((data) => {

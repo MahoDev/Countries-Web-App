@@ -107,62 +107,83 @@ function showCountries(countriesArray) {
 }
 
 //Search tool
-let gotResultsBefore = false;
-let searchResults = [];
 const noResultsText = document.querySelector(".no-results-text");
 const searchInput = document.querySelector(".search-box input");
 
-searchInput.addEventListener("keypress", async function (event) {
-  if (event.key === "Enter") {
-    //add loading spinner
-    comp.toggleLoadingSpinner();
+async function searchHandler(event, type) {
+  //add loading spinner
+  noResultsText.setAttribute("hidden", "true");
 
-    event.preventDefault();
-    const countryObj = await getCountry(searchInput.value);
-    if (countryObj !== undefined) {
-      noResultsText.setAttribute("hidden", "true");
-      if (gotResultsBefore == false) {
-        //hide all countries
-        changeVisibiltyOfCountries(true);
-        //show the countries we searched for
-        let countryElements = changeVisibiltyOfCountries(false, [
-          countryObj.name.common,
-        ]);
-        searchResults.push(...countryElements);
-        gotResultsBefore = true;
-      } else {
-        //hide old search result
-        changeVisibiltyOfCountries(false, null, [searchResults.pop()]);
-        let countryElements = changeVisibiltyOfCountries(false, [
-          countryObj.name.common,
-        ]);
-        searchResults.push(...countryElements);
-      }
-    } else {
-      changeVisibiltyOfCountries(true);
-      noResultsText.removeAttribute("hidden");
-    }
-    //remove loading spinner
+  comp.toggleLoadingSpinner();
+  event.preventDefault();
+  if (searchInput.value.length === 0) {
+    changeVisibiltyOfCountries(false, true);
+    noResultsText.setAttribute("hidden", "true");
     comp.toggleLoadingSpinner();
+    return;
   }
+
+  const countries = getCountriesStartingWith(searchInput.value);
+  changeVisibiltyOfCountries(true);
+  changeVisibiltyOfCountries(false, false, null, countries);
+  if (countries.length === 0) {
+    noResultsText.removeAttribute("hidden");
+  }
+  comp.toggleLoadingSpinner();
+}
+
+function getCountriesStartingWith(text) {
+  let resultCountries = [];
+  let titleCaseText = text.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+  const xpath = `//h2[starts-with(., "${titleCaseText}")]`;
+  const countries = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+    null
+  );
+  let country = {};
+  while (country != null) {
+    country = countries.iterateNext()?.parentElement.parentElement;
+    if (country != null) {
+      resultCountries.push(country);
+    }
+  }
+
+  return resultCountries;
+}
+
+// searchInput.addEventListener("keypress", (event) => {
+//   searchHandler(event);
+// });
+
+searchInput.addEventListener("keyup", (event) => {
+  searchHandler(event);
 });
 
-searchInput.addEventListener("change", (ev) => {});
-
 function changeVisibiltyOfCountries(
-  toggleAll,
-  countryNamesToToggle = [],
-  countryElementsToToggle = []
+  hideAll,
+  showAll = false,
+  countryNamesToShow = [],
+  countryElementsToShow = []
 ) {
-  if (toggleAll === true) {
+  if (hideAll === true) {
     const countries = document.querySelectorAll(".country");
     countries.forEach((country) => {
       country.setAttribute("hidden", "true");
     });
+  } else if (showAll === true) {
+    const countries = document.querySelectorAll(".country");
+    countries.forEach((country) => {
+      country.removeAttribute("hidden");
+    });
   } else {
-    if (countryNamesToToggle !== null && countryNamesToToggle.length != 0) {
+    if (countryNamesToShow !== null && countryNamesToShow.length != 0) {
       let returnCountries = [];
-      countryNamesToToggle.forEach((countryName) => {
+      countryNamesToShow.forEach((countryName) => {
         const xpath = `//h2[text()="${countryName}"]`;
         const countryEl = document.evaluate(
           xpath,
@@ -176,11 +197,11 @@ function changeVisibiltyOfCountries(
       });
       return returnCountries;
     } else if (
-      countryElementsToToggle !== null &&
-      countryElementsToToggle.length != 0
+      countryElementsToShow !== null &&
+      countryElementsToShow.length != 0
     ) {
-      countryElementsToToggle.forEach((country) => {
-        country.setAttribute("hidden", "true");
+      countryElementsToShow.forEach((country) => {
+        country.removeAttribute("hidden");
       });
     }
   }
@@ -208,7 +229,7 @@ regions.forEach((region) => {
       return country.name.common;
     });
     changeVisibiltyOfCountries(true);
-    changeVisibiltyOfCountries(false, countriesNames);
+    changeVisibiltyOfCountries(false, false, countriesNames);
     //remove loading spinner
     comp.toggleLoadingSpinner();
   };
