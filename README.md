@@ -23,7 +23,7 @@ Your users should be able to:
 
 **⚠️ NOTE ⚠️: Sometimes the REST Countries API can go down. We've added a `data.json` file with all the country data if you prefer to use that instead. However, please be aware that the data in the JSON file might not be up-to-date.**
 
-## Langugages and frameworks used
+## Languages and frameworks used
 
 - HTML5
 - Slight CSS
